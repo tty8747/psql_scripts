@@ -1,6 +1,3 @@
-# source some_file
-
-
 export BACKUP_ROOT=""
 export PGUSER=""
 export PGPASSWORD=""
