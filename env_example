@@ -3,11 +3,12 @@ export BACKUP_ROOT=/raid
 export PGHOST=localhost
 export PGPORT=5432
 export PGUSER=postgres
-export PGPASSWORD=postgrespassword
+export PGPASSWORD=strongpass
 
-export GMAILUSER=
-export GMAILPASSWORD=
+export SERVNAME=testnameofserver
 
-export IDCO=
+export GMAILUSER=yourusersender@gmail.com
+export GMAILPASSWORD=strongpass
+export MAILDEST="destmail+$SERVNAME@gmail.com"
 
 export PROGNAME=$(basename $0)
