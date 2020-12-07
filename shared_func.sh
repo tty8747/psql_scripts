@@ -76,7 +76,7 @@ function reindex () {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
   echo "$(date "+%F ::: %T")" > /tmp/$logfile
-  if time (/usr/bin/psql -t -U postgres --dbname $db --command "REINDEX DATABASE \"$db\";") >> /tmp/$logfile 2>&1
+  if time (/usr/bin/psql -t -U postgres --dbname $db --command "REINDEX(VERBOSE) DATABASE \"$db\";") >> /tmp/$logfile 2>&1
   then
       echo "$(cat /tmp/$logfile)"
       rm -f /tmp/$logfile
