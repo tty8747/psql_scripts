@@ -76,7 +76,23 @@ function reindex () {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
   echo "$(date "+%F ::: %T")" > /tmp/$logfile
-  if time (/usr/bin/psql -t -U postgres --dbname $db --command "REINDEX DATABASE \"$db\";") >> /tmp/$logfile 2>&1
+  if time (/usr/bin/psql -t -U postgres --dbname $db --command "REINDEX(VERBOSE) DATABASE \"$db\";") >> /tmp/$logfile 2>&1
+  then
+      echo "$(cat /tmp/$logfile)"
+      rm -f /tmp/$logfile
+      return 0
+  else
+      echo "$(cat /tmp/$logfile)"
+      rm -f /tmp/$logfile
+      return 120
+  fi
+}
+
+function vacuumAnalize () {
+  local db=$1
+  local logfile=$db.log.$$.$RANDOM
+  echo "$(date "+%F ::: %T")" > /tmp/$logfile
+  if time (/usr/bin/psql -t -U postgres --dbname $db --command "VACUUM(FULL, VERBOSE, ANALYZE);") >> /tmp/$logfile 2>&1
   then
       echo "$(cat /tmp/$logfile)"
       rm -f /tmp/$logfile
@@ -101,8 +117,8 @@ function sendEmail () {
 
   if $result
     then
-      echo "$body" | s-nail -v -r "$GMAILUSER" -s "$id. $event is completed SUCCESSFULLY" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
+      echo "$body" | s-nail -d -v -r "$GMAILUSER" -s "$id. $event is completed SUCCESSFULLY" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
     else
-      echo "$body" | s-nail -v -r "$GMAILUSER" -s "$id. $event is FAILED" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
+      echo "$body" | s-nail -d -v -r "$GMAILUSER" -s "$id. $event is FAILED" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
   fi
 }

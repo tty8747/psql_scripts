@@ -1,3 +1,11 @@
 # Scripts for postgresql
 
-- Rename env_example to .env
+## How to start:
+- Copy env_example to .env
+- Put into .env your values
+- Start any script
+
+### Maintenance plan:
+- backup
+- reindex
+- the others scripts
