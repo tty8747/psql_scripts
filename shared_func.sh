@@ -88,6 +88,22 @@ function reindex () {
   fi
 }
 
+function vacuumAnalize () {
+  local db=$1
+  local logfile=$db.log.$$.$RANDOM
+  echo "$(date "+%F ::: %T")" > /tmp/$logfile
+  if time (/usr/bin/psql -t -U postgres --dbname $db --command "VACUUM(FULL, VERBOSE, ANALYZE);") >> /tmp/$logfile 2>&1
+  then
+      echo "$(cat /tmp/$logfile)"
+      rm -f /tmp/$logfile
+      return 0
+  else
+      echo "$(cat /tmp/$logfile)"
+      rm -f /tmp/$logfile
+      return 120
+  fi
+}
+
 function makeid () {
   local db=$1
   echo "$SERVNAME, DB: $db"
