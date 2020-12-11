@@ -104,21 +104,8 @@ function vacuumAnalize() {
   fi
 }
 
-function makeid() {
-  local db=$1
-  echo "$SERVNAME, DB: $db"
-}
-
 function sendEmail() {
-  local id=$1
+  local subj=$1
   local body=$2
-  local event=$3
-  local result=$4
-
-  if $result
-    then
-      echo "$body" | s-nail -d -v -r "$GMAILUSER" -s "$id. $event is completed SUCCESSFULLY" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
-    else
-      echo "$body" | s-nail -d -v -r "$GMAILUSER" -s "$id. $event is FAILED" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
-  fi
+  echo "$body" | s-nail -v -r "$GMAILUSER" -s "$subj" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
 }
