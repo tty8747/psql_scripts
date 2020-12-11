@@ -8,8 +8,10 @@ source ./.env
 
 # --- help functions
 
-function error_exit() {
-  echo -e "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+function error_exit() { # depends on sendEmail()
+  local err=$(echo -e "${PROGNAME}: ${1:-"Unknown Error"}" 2>&1)
+  echo $err
+  sendEmail "Error. $SERVNAME : $PROGNAME" "$err"
   echo -e "Exit codes link: https://tldp.org/LDP/abs/html/exitcodes.html"
   unsetVar "$(getEnvVars)"
   exit 100
