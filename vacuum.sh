@@ -11,9 +11,9 @@ for db in $(getDBnames)
   do
       if log="$(vacuumAnalize "$db")"
       then
-        sendEmail "$(makeid $db)" "$log" "vacuum, analize" true
+        sendEmail "SUCCESS. $SERVNAME : $PROGNAME : $db" "$log"
     else
-        sendEmail "$(makeid $db)" "$log" "vacuum, analize" false
+        sendEmail "FAIL. $SERVNAME : $PROGNAME : $db" "$log"
     fi
   done
 
