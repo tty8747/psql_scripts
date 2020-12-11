@@ -8,18 +8,18 @@ source ./.env
 
 # --- help functions
 
-function error_exit () {
+function error_exit() {
   unsetVar "$(getEnvVars)"
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
   echo "Exit codes link: https://tldp.org/LDP/abs/html/exitcodes.html"
   exit 100
 }
 
-function getEnvVars () {
+function getEnvVars() {
   echo "$(cat .env | grep -Ev "^$" | cut -d' ' -f2 | awk -F'=' '{ print $1}' | xargs echo)"
 }
 
-function getEnvVarsFull_dependsOn () {
+function getEnvVarsFull_dependsOn() {
   local vars=$*
   for i in $vars
     do
@@ -27,13 +27,13 @@ function getEnvVarsFull_dependsOn () {
   done
 }
 
-function getEnvVarValue () {
+function getEnvVarValue() {
   # desc: this function take somevar without '$' and return somevar value
   local var=$1
   echo "$(eval "echo $(eval "echo '$'$var")")"
 }
 
-function checkVar () {
+function checkVar() {
   local vars=$*
   for i in $vars
     do
@@ -44,7 +44,7 @@ function checkVar () {
     done
 }
 
-function unsetVar () {
+function unsetVar() {
   local vars=$*
   for i in $vars
     do
@@ -62,7 +62,7 @@ function CheckDependences() {
 
 # --- main functions
 
-function getDBnames () {
+function getDBnames() {
   local dblist=$(/usr/bin/psql -l -t -U postgres |  /usr/bin/cut -d'|' -f1 | sed '/^ *$/d' | grep -v template* | grep -v postgres)
   if [ -n "$dblist" ]
     then
@@ -72,7 +72,7 @@ function getDBnames () {
   fi
 }
 
-function reindex () {
+function reindex() {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
   echo "$(date "+%F ::: %T")" > /tmp/$logfile
@@ -88,7 +88,7 @@ function reindex () {
   fi
 }
 
-function vacuumAnalize () {
+function vacuumAnalize() {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
   echo "$(date "+%F ::: %T")" > /tmp/$logfile
@@ -104,12 +104,12 @@ function vacuumAnalize () {
   fi
 }
 
-function makeid () {
+function makeid() {
   local db=$1
   echo "$SERVNAME, DB: $db"
 }
 
-function sendEmail () {
+function sendEmail() {
   local id=$1
   local body=$2
   local event=$3
