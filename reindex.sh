@@ -11,9 +11,9 @@ for db in $(getDBnames)
   do
       if log="$(reindex "$db")"
       then
-        sendEmail "$(makeid $db)" "$log" "reindex" true
+        sendEmail "SUCCESS. $SERVNAME : $PROGNAME : $db" "$log"
     else
-        sendEmail "$(makeid $db)" "$log" "reindex" false
+        sendEmail "FAIL. $SERVNAME : $PROGNAME : $db" "$log"
     fi
   done
 
