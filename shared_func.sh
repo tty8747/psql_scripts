@@ -9,9 +9,9 @@ source ./.env
 # --- help functions
 
 function error_exit() {
+  echo -e "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+  echo -e "Exit codes link: https://tldp.org/LDP/abs/html/exitcodes.html"
   unsetVar "$(getEnvVars)"
-  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
-  echo "Exit codes link: https://tldp.org/LDP/abs/html/exitcodes.html"
   exit 100
 }
 
