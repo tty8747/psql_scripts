@@ -4,6 +4,7 @@ export PGHOST=localhost
 export PGPORT=5432
 export PGUSER=postgres
 export PGPASSWORD=strongpass
+export EXCLUDE_DB_LIST="test01|test02|test04"
 
 export SERVNAME=testnameofserver
 

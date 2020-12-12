@@ -62,10 +62,13 @@ function CheckDependences() {
     done
 }
 
+
+
 # --- main functions
 
 function getDBnames() {
-  local dblist=$(/usr/bin/psql -l -t -U postgres |  /usr/bin/cut -d'|' -f1 | sed '/^ *$/d' | grep -v template* | grep -v postgres)
+  local exclude="$EXCLUDE_DB_LIST"
+  local dblist=$(/usr/bin/psql -l -t -U postgres | /usr/bin/cut -d'|' -f1 | sed '/^ *$/d' | grep -v template* | grep -v postgres | grep -Ev "$exclude")
   if [ -n "$dblist" ]
     then
       echo $dblist
