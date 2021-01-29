@@ -12,4 +12,4 @@ export GMAILUSER=yourusersender@gmail.com
 export GMAILPASSWORD=strongpass
 export MAILDEST="destmail+$SERVNAME@gmail.com"
 
-export PROGNAME=$(basename $0)
+export PROGNAME="$(basename "$0")"

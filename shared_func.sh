@@ -9,8 +9,8 @@ source ./.env
 # --- help functions
 
 function error_exit() { # depends on sendEmail()
-  local err=$(echo -e "${PROGNAME}: ${1:-"Unknown Error"}" 2>&1)
-  echo $err
+  local err=$(echo -e "$PROGNAME: ${1:-"Unknown Error"}" 2>&1)
+  echo "$err"
   sendEmail "Error. $SERVNAME : $PROGNAME" "$err"
   echo -e "Exit codes link: https://tldp.org/LDP/abs/html/exitcodes.html"
   unsetVar "$(getEnvVars)"
@@ -22,10 +22,10 @@ function getEnvVars() {
 }
 
 function getEnvVarsFull_dependsOn() {
-  local vars=$*
-  for i in $vars
+  local vars="$@"
+  for i in "$vars"
     do
-      echo "$i ~> $(getEnvVarValue $i)"
+      echo "$i ~> $(getEnvVarValue "$i")"
   done
 }
 
@@ -36,10 +36,10 @@ function getEnvVarValue() {
 }
 
 function checkVar() {
-  local vars=$*
-  for i in $vars
+  local vars="$@"
+  for i in "$vars"
     do
-      if [ -z "$(getEnvVarValue $i)" ]
+      if [ -z "$(getEnvVarValue "$i")" ]
         then
           error_exit "Error:$?, line: $LINENO. Variable $i doesn't set"
       fi
@@ -47,17 +47,17 @@ function checkVar() {
 }
 
 function unsetVar() {
-  local vars=$*
-  for i in $vars
+  local vars="$@"
+  for i in "$vars"
     do
-      unset $i
+      unset "$i"
     done
 }
 
 function CheckDependences() {
   for i in "$@"
     do
-      local j=$(which $i)
+      local j=$(which "$i")
       [[ -n "$j" ]] || error_exit "Error:$?, line: $LINENO. $i - Command not found, please install it!"
     done
 }
@@ -71,7 +71,7 @@ function getDBnames() {
   local dblist=$(/usr/bin/psql -l -t -U postgres | /usr/bin/cut -d'|' -f1 | sed '/^ *$/d' | grep -v template* | grep -v postgres | grep -Ev "$exclude")
   if [ -n "$dblist" ]
     then
-      echo $dblist
+      echo "$dblist"
     else
     error_exit "Error:$?, line: $LINENO. There isn't databases."
   fi
@@ -80,15 +80,15 @@ function getDBnames() {
 function reindex() {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
-  echo "$(date "+%F ::: %T")" > /tmp/$logfile
-  if time (/usr/bin/psql -t -U postgres --dbname $db --command "REINDEX(VERBOSE) DATABASE \"$db\";") >> /tmp/$logfile 2>&1
+  echo "$(date "+%F ::: %T")" > /tmp/"$logfile"
+  if time (/usr/bin/psql -t -U postgres --dbname "$db" --command "REINDEX(VERBOSE) DATABASE \"$db\";") >> /tmp/"$logfile" 2>&1
   then
-      echo "$(cat /tmp/$logfile)"
-      rm -f /tmp/$logfile
+      echo "$(cat /tmp/"$logfile")"
+      rm -f /tmp/"$logfile"
       return 0
   else
-      echo "$(cat /tmp/$logfile)"
-      rm -f /tmp/$logfile
+      echo "$(cat /tmp/"$logfile")"
+      rm -f /tmp/"$logfile"
       return 120
   fi
 }
@@ -96,15 +96,15 @@ function reindex() {
 function vacuumAnalize() {
   local db=$1
   local logfile=$db.log.$$.$RANDOM
-  echo "$(date "+%F ::: %T")" > /tmp/$logfile
-  if time (/usr/bin/psql -t -U postgres --dbname $db --command "VACUUM(FULL, VERBOSE, ANALYZE);") >> /tmp/$logfile 2>&1
+  echo "$(date "+%F ::: %T")" > /tmp/"$logfile"
+  if time (/usr/bin/psql -t -U postgres --dbname "$db" --command "VACUUM(FULL, VERBOSE, ANALYZE);") >> /tmp/"$logfile" 2>&1
   then
-      echo "$(cat /tmp/$logfile)"
-      rm -f /tmp/$logfile
+      echo "$(cat /tmp/"$logfile")"
+      rm -f /tmp/"$logfile"
       return 0
   else
-      echo "$(cat /tmp/$logfile)"
-      rm -f /tmp/$logfile
+      echo "$(cat /tmp/"$logfile")"
+      rm -f /tmp/"$logfile"
       return 120
   fi
 }
@@ -112,5 +112,5 @@ function vacuumAnalize() {
 function sendEmail() {
   local subj=$1
   local body=$2
-  echo "$body" | s-nail -v -r "$GMAILUSER" -s "$subj" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore $MAILDEST
+  echo "$body" | s-nail -v -r "$GMAILUSER" -s "$subj" -S smtp="smtp.gmail.com:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$GMAILUSER" -S smtp-auth-password="$GMAILPASSWORD" -S ssl-verify=ignore "$MAILDEST"
 }

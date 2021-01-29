@@ -7,7 +7,7 @@ source ./shared_func.sh
 checkVar "$(getEnvVars)"
 CheckDependences s-nail
 
-for db in $(getDBnames)
+for db in "$(getDBnames)"
   do
       if log="$(vacuumAnalize "$db")"
       then

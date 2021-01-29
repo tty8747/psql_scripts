@@ -4,7 +4,7 @@ set -e
 
 export XPATHX="./year-folder"
 
-mkdir -pv $XPATHX
+mkdir -pv "$XPATHX"
 
 for i in {01..12}
   do

@@ -2,19 +2,19 @@
 
 # export PGBIN=
 # export PGDATABASE=
-export PGHOST=$1
-export PGPORT=$2
-export PGUSER=$3
-export PGPASSWORD=$4
-export SMTPPASSWORD=$5
-export BACKUP_ROOT=$6
-export MAIL_SEND=$7
-export MAIL_RECV=$8
-export MAIL_SMTP=$9
-export ORG=${10}
-export progName=$(basename $0)
+export PGHOST="$1"
+export PGPORT="$2"
+export PGUSER="$3"
+export PGPASSWORD="$4"
+export SMTPPASSWORD="$5"
+export BACKUP_ROOT="$6"
+export MAIL_SEND="$7"
+export MAIL_RECV="$8"
+export MAIL_SMTP="$9"
+export ORG="${10}"
+export progName="$(basename "$0")"
 
-export RUNLOG=/tmp/$DB.log.$$.$RANDOM
+export RUNLOG=/tmp/"$DB.log.$$.$RANDOM"
 
 # 1. year
 # 2. month
@@ -24,10 +24,10 @@ export RUNLOG=/tmp/$DB.log.$$.$RANDOM
 function sendMessage() {
   local LOG=$1
   local MESSAGE=$2
-  if cat $LOG | mailx -v -r "$MAIL_SEND" -s "$MESSAGE" -S smtp="$MAIL_SMTP:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$MAIL_SEND" -S smtp-auth-password="$SMTPPASSWORD" -S ssl-verify=ignore $MAIL_RECV > /dev/null 2>&1
+  if cat "$LOG" | mailx -v -r "$MAIL_SEND" -s "$MESSAGE" -S smtp="$MAIL_SMTP:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$MAIL_SEND" -S smtp-auth-password="$SMTPPASSWORD" -S ssl-verify=ignore "$MAIL_RECV" > /dev/null 2>&1
     then 
       echo "Send file success"
-  elif echo "$LOG" | mailx -v -r "$MAIL_SEND" -s "$MESSAGE" -S smtp="$MAIL_SMTP:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$MAIL_SEND" -S smtp-auth-password="$SMTPPASSWORD" -S ssl-verify=ignore $MAIL_RECV
+  elif echo "$LOG" | mailx -v -r "$MAIL_SEND" -s "$MESSAGE" -S smtp="$MAIL_SMTP:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="$MAIL_SEND" -S smtp-auth-password="$SMTPPASSWORD" -S ssl-verify=ignore "$MAIL_RECV"
     then
       echo "Send text success"
   else
@@ -77,7 +77,7 @@ function createBackupFolder() {
   else
     BACKUP_DIR="$BACKUP_ROOT/daily/$(date +%F)"
   fi
-  if mkdir -p $BACKUP_DIR
+  if mkdir -p "$BACKUP_DIR"
     then return 0
   else
     return 77
@@ -86,9 +86,9 @@ function createBackupFolder() {
 
 function createBackup () {
   local fullpath=$1
-  if time (/usr/bin/pg_dump --no-password --quote-all-identifiers --format=plain --dbname=postgresql://$PGUSER:$PGPASSWORD@$PGHOST/$DB | /bin/gzip -c > "$1") > $RUNLOG 2>&1
+  if time (/usr/bin/pg_dump --no-password --quote-all-identifiers --format=plain --dbname=postgresql://"$PGUSER:$PGPASSWORD@$PGHOST/$DB" | /bin/gzip -c > "$1") > "$RUNLOG" 2>&1
     then
-      du -hsx "$1" >> $RUNLOG
+      du -hsx "$1" >> "$RUNLOG"
       return 0
   else
     return 98
@@ -110,17 +110,17 @@ DB_LIST="gilev01 gilev02 gilev03"
 
 if [[ -n "$DB_LIST" ]]
   then
-    for DB in $DB_LIST
+    for DB in "$DB_LIST"
       do
         if createBackupFolder "$(date +%w)"
           then
-            if createBackup "$BACKUP_DIR/$DB--`date +%F--%H-%M`.sql.gz"
+            if createBackup "$BACKUP_DIR/$DB--$(date +%F--%H-%M).sql.gz"
               then
                 sendMessage "$RUNLOG" "$ORG: $DB backup completed SUCCESSFULLY!"
-                rm -f $RUNLOG
+                rm -f "$RUNLOG"
               else
                 sendMessage "$RUNLOG" "$ORG: $DB Backup FAILED!"
-                rm -f $RUNLOG
+                rm -f "$RUNLOG"
             fi
           else
             sendMessage "$ORG: Error! The folder wasn't created. Error $?" "Backup FAILED"
