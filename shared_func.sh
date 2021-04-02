@@ -73,7 +73,7 @@ function getDBnames() {
     then
       echo "$dblist"
     else
-    error_exit "Error:$?, line: $LINENO. There isn't databases."
+    error_exit "Error:$?, line: $LINENO. There aren't databases."
   fi
 }
 
