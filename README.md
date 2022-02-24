@@ -1,3 +1,5 @@
+# DEPRECATED
+## New vesion is on the (gitlab)[https://gitlab.com/tty8747/pgsql_scripts]
 # Scripts for postgresql
 
 ## How to start:
